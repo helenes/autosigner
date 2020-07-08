@@ -1,0 +1,4 @@
+---
+allowed_projects:
+  - 123456789012 # AWS Account
+  - myprojectz-000000 # GCP Project

@@ -4,7 +4,22 @@ This app determines if a Certificate Request should be signed by the Puppet Serv
 
 ## Required configuration
 
-Setting valid GCP projects and AWS accounts that should be able to obtain a signed certificate
+### Autosigner config
+
+Autosigner uses a configuration file [autosigner.yaml](configs/autosigner.yaml) for defining what GCP projects and AWS accounts are allowed certificate signing.
+
+#### Location
+
+Autosigner will look for the configuration file in two places: `/etc/puppetlabs/puppet/` and the same directory as the binary.
+This configuration file is not automatically created by the Autosigner app.
+
+#### Format
+
+The [autosigner.yaml](configs/autosigner.yaml) file uses the [YAML](https://yaml.org/) format.
+
+### IAM Permissions and Roles
+
+> Note: TODO
 
 ## Methods for Signing
 
@@ -17,7 +32,7 @@ There are 3 methods for determining if a certificate should be signed.
 ### Basic Autosigning
 
 Similar to [autosign.conf](https://puppet.com/docs/puppet/latest/ssl_autosign.html#ssl_basic_autosigning), Autosigner will use a file
-called `autosigner_hostnames.conf`
+called [autosigner_hostnames.conf](configs/autosigner_hostnames.conf)
 
 #### Location
 
@@ -27,7 +42,7 @@ app.
 
 #### Format
 
-The autosigner_hostnames.conf file is a line-separated list of certnames or domain name globs. Each line represents a node name or group of node names
+The [autosigner_hostnames.conf](configs/autosigner_hostnames.conf) file is a line-separated list of certnames or domain name globs. Each line represents a node name or group of node names
 for which the Autosigner automatically signs certificate requests.
 
 ```
@@ -72,7 +87,7 @@ YAML
 ```
 
 An example script when deploying a `AWS instance`.
-> Note the use of `pp_project` for defining the AWS Account number
+> Note: The use of `pp_project` for defining the AWS Account number
 ```bash
 #!/bin/sh
 if [ ! -d /etc/puppetlabs/puppet ]; then

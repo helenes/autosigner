@@ -12,7 +12,7 @@ import (
 	"google.golang.org/api/compute/v1"
 )
 
-const autosignerConfPath string = "autosigner_hostnames.conf"
+const autosignerConfPath string = "/etc/puppetlabs/puppet/autosigner_hostnames.conf"
 
 func (r request) validate() bool {
 

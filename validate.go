@@ -18,7 +18,7 @@ func (r request) validate() bool {
 
 	// Check for local file first
 	if validateFile(r) {
-		log.Printf("Sucessfully validated %v using autosigner_hostnames.conf\n", r.hostname)
+		// log.Printf("Sucessfully validated %v using autosigner_hostnames.conf\n", r.hostname)
 		return true
 	}
 
@@ -38,7 +38,7 @@ func (r request) validate() bool {
 				}
 			}
 			if valid {
-				log.Printf("Sucessfully validated %v with Instance ID: %v, Zone: %v, Project: %v, Cloud Platform: %v\n", r.hostname, r.instanceID, r.zone, r.project, r.cloudPlatform)
+				// log.Printf("Sucessfully validated %v with Instance ID: %v, Zone: %v, Project: %v, Cloud Platform: %v\n", r.hostname, r.instanceID, r.zone, r.project, r.cloudPlatform)
 				return true
 			}
 		}
@@ -68,7 +68,7 @@ func validateFile(r request) bool {
 	for _, eachLine := range txtlines {
 		// if eachline == r.hostname {
 		if glob(eachLine, r.hostname) {
-			log.Printf("Hostname matched in %v, line \"%v\"\n", autosignerConfPath, eachLine)
+			// log.Printf("Hostname matched in %v, line \"%v\"\n", autosignerConfPath, eachLine)
 			return true
 		}
 	}

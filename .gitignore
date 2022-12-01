@@ -62,3 +62,4 @@ Temporary Items
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+autosigner

@@ -30,6 +30,11 @@ jobs:
         with:
           name: autosigner-artifact
           path: ./autosigner.zip
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: autosigner-binary
+          path: ./bin/autosigner
 
   create-release:
     needs: build
@@ -63,8 +68,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: autosigner-artifact
-      - name: Upload Release Asset
-        id: upload-release-asset
+      - name: Download binary
+        uses: actions/download-artifact@v2
+        with:
+          name: autosigner-binary
+      - name: Upload Release Asset Zip
+        id: upload-release-asset-zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,3 +82,13 @@ jobs:
           asset_path: ./autosigner.zip
           asset_name: autosigner.zip
           asset_content_type: application/zip
+      - name: Upload Release Asset Binary
+        id: upload-release-asset-binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./bin/autosigner
+          asset_name: autosigner
+          asset_content_type: application/octet-stream

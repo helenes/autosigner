@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"google.golang.org/api/compute/v1"
+	"google.golang.org/api/googleapi"
 )
 
 const autosignerConfPath string = "/etc/puppetlabs/puppet/autosigner_hostnames.conf"
@@ -54,7 +55,7 @@ func (r request) validate() bool {
 func validateFile(r request) bool {
 	file, err := os.Open(autosignerConfPath)
 	if err != nil {
-		log.Fatalf("Failed opening file: %s", err)
+		log.Fatalf("Failed opening file: %s, with error:%s", autosignerConfPath, err)
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -78,19 +79,34 @@ func validateFile(r request) bool {
 
 func validateGCP(r request) bool {
 	ctx := context.Background()
-	instanceID, err := strconv.ParseUint(r.instanceID, 10, 64)
+	instanceID, _ := strconv.ParseUint(r.instanceID, 10, 64)
 
 	computeService, err := compute.NewService(ctx)
 	if err != nil {
 		log.Fatalf("Failed to create service: %v\n", err)
 	}
+	var completeList []*compute.Instance
 	list, err := computeService.Instances.List(r.project, r.zone).Do()
 	if err != nil {
 		log.Fatalf("Failed to get InstanceList: %v\n", err)
 	}
+	completeList = append(completeList, list.Items...)
 
-	itemsa := list.Items
-	for _, v := range itemsa {
+	if list.NextPageToken != "" {
+		pageToken := list.NextPageToken
+		for pageToken != "" {
+			nextList, err := computeService.Instances.List(r.project, r.zone).Do(googleapi.QueryParameter("pageToken", pageToken))
+			if err != nil {
+				log.Fatalf("Failed to get InstanceList: %v\n", err)
+			}
+			completeList = append(completeList, nextList.Items...)
+			pageToken = nextList.NextPageToken
+		}
+	}
+
+	fmt.Println(len(completeList))
+
+	for _, v := range completeList {
 		if v.Id == instanceID {
 			return true
 		}

@@ -104,8 +104,6 @@ func validateGCP(r request) bool {
 		}
 	}
 
-	fmt.Println(len(completeList))
-
 	for _, v := range completeList {
 		if v.Id == instanceID {
 			return true
